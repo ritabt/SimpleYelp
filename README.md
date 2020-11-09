@@ -1,6 +1,6 @@
 # Yelp Clone 
 
-## *Your name here*
+## *Rita Tlemcani*
 
 **Yelp clone** displays a list of search results from the Yelp API and displays the results in a scrollable list. 
 
