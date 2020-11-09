@@ -27,22 +27,37 @@ class MainActivity : AppCompatActivity() {
             Retrofit.Builder().baseUrl(BASE_URL).addConverterFactory(GsonConverterFactory.create())
                 .build()
         val yelpService = retrofit.create(YelpService::class.java)
-        yelpService.searchRestaurants("Bearer $API_KEY","Avocado Toast", "New York").enqueue(object : Callback<YelpSearchResult>{
-            override fun onResponse(call: Call<YelpSearchResult>, response: Response<YelpSearchResult>) {
-                Log.i(TAG, "onResponse $response")
-                val body = response.body()
-                if (body == null){
-                    Log.w(TAG, "Did not receive valid response body from Yelp API ... exiting")
-                    return
-                }
-                restaurants.addAll(body.restaurants)
-                adapter.notifyDataSetChanged()
-            }
 
-            override fun onFailure(call: Call<YelpSearchResult>, t: Throwable) {
-                Log.i(TAG, "onFailure $t")
-            }
-        })
+
+        btSearch.setOnClickListener() {
+            val food = etFoodSearch.text.toString()
+            val location = etLocation.text.toString()
+
+            yelpService.searchRestaurants("Bearer $API_KEY", food, location)
+                .enqueue(object : Callback<YelpSearchResult> {
+                    override fun onResponse(
+                        call: Call<YelpSearchResult>,
+                        response: Response<YelpSearchResult>
+                    ) {
+                        Log.i(TAG, "onResponse $response")
+                        val body = response.body()
+                        if (body == null) {
+                            Log.w(
+                                TAG,
+                                "Did not receive valid response body from Yelp API ... exiting"
+                            )
+                            return
+                        }
+                        restaurants.clear()
+                        restaurants.addAll(body.restaurants)
+                        adapter.notifyDataSetChanged()
+                    }
+
+                    override fun onFailure(call: Call<YelpSearchResult>, t: Throwable) {
+                        Log.i(TAG, "onFailure $t")
+                    }
+                })
+        }
         //
     }
 }
